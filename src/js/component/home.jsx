@@ -15,10 +15,7 @@ const Home = () => {
         })
         .then(resp => resp.json())
         .then(data => {
-            /*const fetchedTodos = data.map(item => item.label);
-            setTodos(fetchedTodos); */
-			setTodos(data); // Almacena directamente el array completo de tareas
-
+			setTodos(data);
         })
         .catch(error => {
             console.log(error);
@@ -26,12 +23,9 @@ const Home = () => {
     };
 
 	useEffect(() => {
-        // Realizar la primera solicitud al montar el componente
         fetchTodos();
-        // Establecer una solicitud periódica cada 5 segundos
         const intervalId = setInterval(fetchTodos, 5000);
 
-        // Limpiar el intervalo al desmontar el componente
         return () => clearInterval(intervalId);
     }, []);
 
@@ -81,8 +75,8 @@ const Home = () => {
 						value={inputValue} 
 						onKeyUp={(e) => {
 							if (e.key === "Enter") { 
-								handleAddTodo(); // Llamada a handleAddTodo cuando se presiona Enter
-								setInputValue(""); // Limpiar el campo de entrada
+								handleAddTodo();
+								setInputValue("");
 							}
 						}}
 						placeholder="What do you need to do?"></input>
