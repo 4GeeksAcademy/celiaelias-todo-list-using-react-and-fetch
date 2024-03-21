@@ -7,7 +7,7 @@ const Home = () => {
 	const [ inputValue, setInputValue ] = useState("");
 	const [ todos, setTodos ] = useState([]);
     const fetchTodos = () => {
-        fetch('https://playground.4geeks.com/apis/fake/todos/user/sarangonga', {
+        fetch('https://playground.4geeks.com/apis/fake/todos/user/sarandonga', {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
@@ -15,8 +15,10 @@ const Home = () => {
         })
         .then(resp => resp.json())
         .then(data => {
-            const fetchedTodos = data.map(item => item.label);
-            setTodos(fetchedTodos);
+            /*const fetchedTodos = data.map(item => item.label);
+            setTodos(fetchedTodos); */
+			setTodos(data); // Almacena directamente el array completo de tareas
+
         })
         .catch(error => {
             console.log(error);
@@ -34,7 +36,12 @@ const Home = () => {
     }, []);
 
 	const handleDeleteTodo = (index) => {
-		const updatedTodos = todos.filter((_, currentIndex) => index !== currentIndex).map(label => ({ label, done: false }));
+		const updatedTodos = todos.filter((_, currentIndex) => index !== currentIndex);
+		updateTodosOnServer(updatedTodos);
+	};
+	
+	const handleAddTodo = () => {
+		const updatedTodos = [...todos, { label: inputValue, done: false }];
 		updateTodosOnServer(updatedTodos);
 	};
 	
@@ -42,7 +49,7 @@ const Home = () => {
 	const updateTodosOnServer = (updatedTodos) => {
 		console.log(updatedTodos)
 		console.log(JSON.stringify(updatedTodos))
-        fetch('https://playground.4geeks.com/apis/fake/todos/user/sarangonga', {
+        fetch('https://playground.4geeks.com/apis/fake/todos/user/sarandonga', {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"
@@ -74,19 +81,19 @@ const Home = () => {
 						value={inputValue} 
 						onKeyUp={(e) => {
 							if (e.key === "Enter") { 
-								setTodos(todos.concat(inputValue));
-								setInputValue("");
+								handleAddTodo(); // Llamada a handleAddTodo cuando se presiona Enter
+								setInputValue(""); // Limpiar el campo de entrada
 							}
 						}}
 						placeholder="What do you need to do?"></input>
 				</li>
-				
 				{todos.map((item, index) => (
-					<li>
-						{item} {""} 
-						<FontAwesomeIcon icon={faTrashCan} className="trashcan" onClick={() => handleDeleteTodo(index)}/>
+					<li key={index}>
+						{item.label}
+						<FontAwesomeIcon icon={faTrashCan} className="trashcan" onClick={() => handleDeleteTodo(index)} />
 					</li>
-				))}	
+				))}
+
 			</ul>
 			<div>{todos.length} tasks</div>
 		</div>
